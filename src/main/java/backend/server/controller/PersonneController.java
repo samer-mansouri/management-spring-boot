@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,8 @@ import backend.server.entity.Enums.Relation;
 import backend.server.entity.Enums.Sexe;
 import backend.server.repository.IPersonneRepo;
 import backend.server.repository.IUserRepo;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -37,7 +40,11 @@ public class PersonneController {
     @Autowired
     IUserRepo userRepo;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @PostMapping("/personne")
+    @Transactional
     public void createFamilyMember(HttpServletRequest request, HttpServletResponse response) throws ParseException, StreamWriteException, DatabindException, IOException {
         String nom = request.getParameter("nom");
         String prenom = request.getParameter("prenom");
@@ -54,6 +61,7 @@ public class PersonneController {
         personne.setRelation(relation);
         try {
             userRepo.findById(userId).ifPresent(personne::setUser);
+            entityManager.persist(personne);
             personneRepo.save(personne);
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Personne créé avec succès");
@@ -62,7 +70,7 @@ public class PersonneController {
             new ObjectMapper().writeValue(response.getOutputStream(), map);
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
-            map.put("message", "Erreur lors de la création de la personne");
+            map.put("message", e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             new ObjectMapper().writeValue(response.getOutputStream(), map);
         }

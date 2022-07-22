@@ -12,6 +12,7 @@ public interface IDetailsRepo extends JpaRepository<Details, Long> {
     //A query to select details by user id
     //@Query("SELECT d FROM Details d WHERE d.user.id = ?1")
     public Details findByUserId(Long id);
+    long count();
 
     //Details findByUserId(Long userId);
     

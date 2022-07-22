@@ -1,1 +1,1 @@
-/usr/bin/env /home/samer/.vscode/extensions/redhat.java-1.8.0-linux-x64/jre/17.0.3-linux-x86_64/bin/java -XX:+ShowCodeDetailsInExceptionMessages @/tmp/cp_by77w5cn4x03oj51jp743jwit.argfile backend.server.ServerApplication
+/usr/bin/env /usr/lib/jvm/java-17-oracle/bin/java -XX:+ShowCodeDetailsInExceptionMessages @/tmp/cp_by77w5cn4x03oj51jp743jwit.argfile backend.server.ServerApplication

@@ -34,6 +34,7 @@ import backend.server.repository.IDetailsRepo;
 import backend.server.repository.IUserRepo;
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")

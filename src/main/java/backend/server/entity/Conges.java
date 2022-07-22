@@ -1,7 +1,7 @@
 package backend.server.entity;
 
 import java.util.Date;
-import java.util.List;
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,9 +45,8 @@ public class Conges {
     @Column(name = "date_fin", nullable = false)
     private Date dateFin;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
     private User user;
     
 
@@ -60,6 +60,8 @@ public class Conges {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
+
+
 
 
     

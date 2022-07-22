@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
@@ -74,6 +76,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
+        tokens.put("role", u.getRole().toString());
+        tokens.put("id", u.getId().toString());
+        tokens.put("name", u.getFirstName() + " " + u.getLastName());
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

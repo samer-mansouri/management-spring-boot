@@ -10,5 +10,7 @@ import backend.server.entity.Conges;
 public interface ICongesRepo extends JpaRepository<Conges, Long> {
 
     List<Conges> findAllByUserId(Long userId);
+    long count();
+    long countByUserId(Long userId);
     
 }

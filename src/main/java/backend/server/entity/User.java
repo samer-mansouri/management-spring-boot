@@ -57,21 +57,23 @@ public class User  {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonBackReference
     private Details details;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    // @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     private List<Conges> conges;
 
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
     private List<Details> managerOf;
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    //@JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     private List<Personne> membre_de_famille;
 
 

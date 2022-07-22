@@ -20,10 +20,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 import static org.springframework.http.HttpMethod.GET;
 
 import java.util.Arrays;
+
 
 @Configuration @EnableWebSecurity @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -40,35 +40,56 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource()
-    {
-      CorsConfiguration configuration = new CorsConfiguration();
-      configuration.setAllowedOrigins(Arrays.asList("*"));
-      configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
-      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      source.registerCorsConfiguration("/**", configuration);
-      return source;
-    }
+    // @Bean
+    // CorsConfigurationSource corsConfigurationSource()
+    // {
+    //   CorsConfiguration configuration = new CorsConfiguration();
+    //   configuration.setAllowedOrigins(Arrays.asList("*"));
+    //   configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
+    //   UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //   source.registerCorsConfiguration("/**", configuration);
+    //   return source;
+    // }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), userRepo);
-        //http.cors().configurationSource(corsConfigurationSource());
+        //http.cors().configurationSource(corsConfigurationSource())
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/v1/login", "/api/v1/token_refresh", "/api/v1/register").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/v1/details").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.cors()
+        .and()
+        .csrf().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .authorizeRequests().antMatchers("/api/v1/login", "/api/v1/token_refresh", "/api/v1/register").permitAll()
+        .and()
+        .authorizeRequests().antMatchers(GET, "/api/v1/projects").hasAnyRole("ADMIN")
+        .and()
+        .authorizeRequests().anyRequest().authenticated()
+        .and().addFilter(customAuthenticationFilter)
+        .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", 
+        "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", 
+        "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        UrlBasedCorsConfigurationSource source = new 
+        UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
    
